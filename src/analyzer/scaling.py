@@ -62,5 +62,5 @@ def grover_scaling(n_bits_range: list) -> list:
     """
     scaling_values = []
     for bits in n_bits_range:
-        scaling_values.append(math.sqrt(2 ** bits))
+        scaling_values.append(math.isqrt(2 ** bits))
     return scaling_values

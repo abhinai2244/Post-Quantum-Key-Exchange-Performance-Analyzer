@@ -133,7 +133,16 @@ def generate_speedup_factors(bit_sizes: list[int]) -> pd.DataFrame:
     rows = []
     for i, bits in enumerate(bit_sizes):
         factor_speedup = classical_factor[i] / max(quantum_factor[i], 1)
-        search_speedup = classical_search[i] / max(quantum_search[i], 1)
+        
+        c_search = classical_search[i]
+        q_search = max(quantum_search[i], 1)
+        
+        # Use integer division for massive ints to avoid Float OverflowError
+        if isinstance(c_search, int) and isinstance(q_search, int):
+            search_speedup = c_search // q_search
+        else:
+            search_speedup = c_search / q_search
+
         rows.append(
             {
                 "Key Size (bits)": bits,
@@ -141,8 +150,8 @@ def generate_speedup_factors(bit_sizes: list[int]) -> pd.DataFrame:
                 "Shor's Algorithm (ops)": quantum_factor[i],
                 "Factorization Speedup": factor_speedup,
                 "Factorization Speedup (log10)": math.log10(max(factor_speedup, 1)),
-                "Classical Search (ops)": classical_search[i],
-                "Grover's Algorithm (ops)": quantum_search[i],
+                "Classical Search (ops)": c_search,
+                "Grover's Algorithm (ops)": q_search,
                 "Search Speedup": search_speedup,
                 "Search Speedup (log10)": math.log10(max(search_speedup, 1)),
             }

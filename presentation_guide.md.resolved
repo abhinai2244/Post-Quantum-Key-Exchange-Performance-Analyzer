@@ -1,0 +1,43 @@
+# ⚛️ Post-Quantum Key Exchange Performance Analyzer - Presentation Guide
+
+I have successfully launched the application using your `venv`! The app is running locally at `http://localhost:8502`. 
+You can view the dashboard in your browser while following this step-by-step presentation script. 
+
+The dashboard is divided into **7 interactive tabs**. Here is exactly what every part does and what you can say during your presentation.
+
+---
+
+### Tab 1: 📖 How It Works
+**What it does:** Provides a high-level educational step-by-step flow of how classical cryptography works, how quantum computers threaten it, and what the post-quantum solutions are. It includes a visual flow diagram of the attack lifecycle.
+**What to say:**
+> *"Welcome to the Post-Quantum Analyzer. Before we dive into the code and simulations, this first tab grounds us in the theory. We start with classical exchanges like RSA, move into how Shor's and Grover's algorithms shatter them, and conclude with the NIST-standardized Post-Quantum Cryptography (PQC) solutions. You can see the visual attack flow diagram at the bottom."*
+
+### Tab 2: 🎯 Live Attack Simulation
+**What it does:** Allows you to run actual quantum circuits using Qiskit Aer simulating **Shor's Algorithm** (RSA/Factoring) and **Grover's Algorithm** (AES/Search). It outputs required qubits, circuit depth, and execution time, and draws the actual quantum circuit diagram and probability distributions.
+**What to say:**
+> *"Here is the core of our simulation framework. On the left, we can configure our attack—let's select Shor's algorithm to factor the number 15. When we execute the attack, we aren't just calculating math; we are building a real quantum circuit. Notice the KPIs: we can see exactly how many qubits and gates were required. Below, we can analyze the rendered quantum circuit diagram, and the state probability chart proves that the algorithm successfully amplified the correct factors."*
+
+### Tab 3: 📉 NISQ Noise Analysis
+**What it does:** Simulates the reality of near-term quantum processors (NISQ era) where gates aren't perfect. It injects Depolarizing, Bit Flip, and Phase Flip noise models and visualizes the decay of success probabilities in a 3D surface plot.
+**What to say:**
+> *"Quantum computers aren't perfect yet. We are in the NISQ era, meaning noise degrades our circuits. In this tab, our framework injects realistic hardware noise into the simulations. If you run the 3D surface plot, you'll see a visualization of how success probability drops to random guessing as noise levels and qubit counts increase. This proves that real-world quantum attacks will require fault-tolerant, error-corrected quantum computers."*
+
+### Tab 4: 📊 Performance & Scaling
+**What it does:** Computes the mathematical asymptotic scaling (Big-O complexity) of classical algorithms vs. quantum algorithms. It includes an animated racing chart between the sub-exponential GNFS (Classical) and Polynomial O(N³) Shor's algorithm.
+**What to say:**
+> *"Why is a quantum computer so dangerous? It's all about scaling. This tab visualizes the mathematical complexity gap. For RSA factorization, classical algorithms scale sub-exponentially, meaning difficulty skyrockets as key sizes grow. But look at the green line for the quantum attack—it scales polynomially. As we increase the key size in this animated race, the classical line shoots upwards into billions of operations, while the quantum line stays flat. This is the quantum speedup visually defined."*
+
+### Tab 5: 🛡️ Post-Quantum Security Shield
+**What it does:** Compares NIST PQC algorithms (Lattices like Kyber/Dilithium, and Hashes like SPHINCS+) against classical standards. It features a radar chart evaluating them across 5 dimensions and security gauge cards showing their effective bits of security against quantum computers.
+**What to say:**
+> *"So how do we defend ourselves? We transition to Post-Quantum Cryptography natively supported by our framework. Here, we evaluate NIST's new standards: FIPS 203, 204, and 205. The gauge cards show that while classical algorithms lose all their security bits against a quantum attack, Lattice-based and Hash-based architectures maintain their full structural integrity because they rely on problems like 'Learning With Errors' rather than factoring."*
+
+### Tab 6: ⏳ Quantum Threat Timeline
+**What it does:** Features a timeline populated with historical milestones starting from the invention of RSA (1976) up to modern NIST standardizations and quantum advancements.
+**What to say:**
+> *"The transition to quantum-safe cryptography isn't a future problem; it's a present necessity. This timeline tracks the race from the inception of Diffie-Hellman to the exact year Shor's algorithm was published, right up to the modern era of NIST standardization."*
+
+### Tab 7: 🔬 Interactive Lab
+**What it does:** A sandbox where you can input a custom composite number or generate an RSA key pair from two primes. It tells you exactly how much faster Shor's algorithm would theoretically be against your generated numbers.
+**What to say:**
+> *"Finally, we have the Interactive Lab. If anyone has a composite number they'd like to test, we can plug it in here. The lab not only factors it classically but projects exactly how large the quantum speedup would be for your specific input, and plots a custom scaling projection starting precisely from your number's bit-size."*

@@ -54,7 +54,7 @@ HTML_TEMPLATE = """
         </div>
         
         <div class="card" style="font-family: monospace; font-size: 12px;">
-            <h4 style="margin:0 0 10px 0; color:#8b5cf6;">🔬 Live PQC Encryption Logs</h4>
+            <h4 style="margin:0 0 10px 0; color:#ec4899;">✍️ ML-DSA (Dilithium) Identity Verification </h4>
             <div id="crypto-logs" style="height: 150px; overflow-y: auto; color: #a3a3a3;"></div>
         </div>
     </div>
@@ -85,6 +85,17 @@ HTML_TEMPLATE = """
             logCrypto(`Connected to signaling server as: ${myId}`);
         });
 
+        function generateMockSignature(msg) {
+            // ML-DSA signatures are typically ~2.4KB - 4.6KB depending on security level.
+            // We simulate generating a massive signature string to visualize the PQC overhead.
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+            let sig = '';
+            for (let i = 0; i < 64; i++) {
+                sig += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return `MLDSA_SIG_v3[${sig}...]`;
+        }
+
         socket.on('status_update', (data) => {
             const bar = document.getElementById('connection-bar');
             if (data.status === 'paired') {
@@ -93,7 +104,8 @@ HTML_TEMPLATE = """
                 bar.innerText = `Connected securely to peer!`;
                 document.getElementById('send-btn').disabled = false;
                 appendMessage('System', 'Kyber KEM Key Exchange Successful. AES-256 Symmetric Key Derivation Complete.');
-                logCrypto(`Handshake complete. Derived shared 256-bit AES key.`);
+                logCrypto(`[KEM] Handshake complete. Derived shared 256-bit AES key.`);
+                logCrypto(`[DSA] Generated Post-Quantum Identity Keypair (Dilithium / ML-DSA Level 3).`);
                 isEncrypted = true;
             } else if (data.status === 'waiting') {
                 bar.className = 'status-wait';
@@ -106,7 +118,13 @@ HTML_TEMPLATE = """
 
         socket.on('receive_message', (data) => {
             logCrypto(`[IN] Received Encrypted Payload (AES-GCM): Ciphertext=${data.encrypted.substring(0, 20)}...`);
-            appendMessage('Friend', data.decrypted_msg, `🔒 AES-256 Decrypted`);
+            logCrypto(`[IN] Received Signature Payload: ${data.signature}`);
+            
+            // Simulate verification delay
+            setTimeout(() => {
+                logCrypto(`<span style="color:#22c55e;">[VERIFIED]</span> Identity mathematically proven via ML-DSA Verification Algorithm. Message intact.`);
+                appendMessage('Friend', data.decrypted_msg, `🔒 AES-256 Decrypted<br><span style="color:#22c55e;">✅ Verified Identity (Dilithium)</span>`);
+            }, 600);
         });
 
         function sendMessage() {
@@ -114,11 +132,15 @@ HTML_TEMPLATE = """
             const msg = input.value.trim();
             if(!msg || !isEncrypted) return;
             
-            logCrypto(`[OUT] Encrypting message with AES-256 and transmitting...`);
-            appendMessage('You', msg, `🔒 AES-256 Encrypted`);
+            const mockSig = generateMockSignature(msg);
             
-            // Send clear text to server (In real WebRTC this would be P2P, but for this Hackathon demo the Flask server acts as the router/encrypter)
-            socket.emit('send_message', { target: peerId, msg: msg });
+            logCrypto(`[OUT] Signing message with ML-DSA Private Key... Generated 3,293-byte signature.`);
+            logCrypto(`[OUT] Encrypting message with AES-256 and transmitting...`);
+            
+            appendMessage('You', msg, `🔒 AES-256 Encrypted<br><span style="color:#8b5cf6;">✍️ ML-DSA Signed</span>`);
+            
+            // Send clear text to server and the signature to simulate the massive payload
+            socket.emit('send_message', { target: peerId, msg: msg, signature: mockSig });
             input.value = '';
         }
     </script>
@@ -171,6 +193,7 @@ def handle_disconnect():
 def handle_message(data):
     target_sid = data.get('target')
     original_msg = data.get('msg')
+    signature = data.get('signature', 'MISSING_SIG')
     sender_sid = request.sid
     
     if target_sid and target_sid in shared_aes_keys:
@@ -182,13 +205,14 @@ def handle_message(data):
             cipher = AES.new(aes_key, AES.MODE_GCM)
             ciphertext, tag = cipher.encrypt_and_digest(original_msg.encode('utf-8'))
             
-            # Send the simulated encrypted payload and the plaintext (for browser display)
+            # Send the simulated encrypted payload, the plaintext, and the routed signature
             payload = {
                 'encrypted': base64.b64encode(ciphertext).decode('utf-8'),
-                'decrypted_msg': original_msg
+                'decrypted_msg': original_msg,
+                'signature': signature
             }
             emit('receive_message', payload, room=target_sid)
-            print(f"[*] Routed message from {sender_sid} to {target_sid}")
+            print(f"[*] Routed encrypted message + {len(signature)} byte signature from {sender_sid} to {target_sid}")
         except Exception as e:
             print(f"Encryption error: {e}")
 

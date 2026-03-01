@@ -509,6 +509,19 @@ with tab2:
             fig_probs.update_traces(marker_line_width=0)
             st.plotly_chart(fig_probs, use_container_width=True)
 
+            # ── Prevention Explanation ───────────────────────
+            st.markdown("""
+            <div style="background: rgba(34, 197, 94, 0.1); border-left: 4px solid #22c55e; padding: 15px; border-radius: 8px; margin-top: 20px;">
+                <h4 style="color: #22c55e; margin-top: 0;">🛡️ How to Prevent Shor's Attack</h4>
+                <p style="color: #e0e0e0; margin-bottom: 0;">
+                    Shor's algorithm completely destroys <b>RSA</b> and <b>Elliptic Curve</b> cryptography because it efficiently solves factoring and discrete logarithms. 
+                    <br><br>
+                    <b>The Solution: Post-Quantum Cryptography (PQC)</b><br>
+                    We must migrate to NIST-standardized algorithms like <b>Kyber (ML-KEM / FIPS 203)</b>. Kyber relies on <i>Lattice-based mathematics</i> (Learning With Errors). It hides the encryption key as a vector inside a massive, multi-dimensional grid with deliberate noise added. Shor's algorithm offers absolutely no mathematical advantage in finding the shortest path through this chaotic grid, rendering the quantum attack useless.
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+
     else:  # Grover's Algorithm
         st.markdown('<div class="glass-card">', unsafe_allow_html=True)
         col1, col2 = st.columns([3, 2])
@@ -614,6 +627,19 @@ with tab2:
                 st.success(f"🎯 Target state |{target_state}⟩ found with **{target_prob:.1%}** probability — Grover's amplification works!")
             else:
                 st.warning(f"Target probability is {target_prob:.1%}. Try adjusting the iteration count closer to the optimal value ({optimal_iters}).")
+
+            # ── Prevention Explanation ───────────────────────
+            st.markdown("""
+            <div style="background: rgba(34, 197, 94, 0.1); border-left: 4px solid #22c55e; padding: 15px; border-radius: 8px; margin-top: 20px;">
+                <h4 style="color: #22c55e; margin-top: 0;">🛡️ How to Prevent Grover's Attack</h4>
+                <p style="color: #e0e0e0; margin-bottom: 0;">
+                    Grover's algorithm drastically weakens <b>Symmetric Encryption (AES)</b> and <b>Hash Functions (SHA)</b>. It reduces the effective security of an encryption key by exactly half. An AES-128 bit key acts like it only has 64 bits of security against a quantum computer.
+                    <br><br>
+                    <b>The Solution: Double the Key Size</b><br>
+                    Because Grover's algorithm only provides a <i>quadratic</i> speedup (not an exponential one like Shor's), the defense is mathematically simple. We just double the length of the keys we use. Upgrading from <b>AES-128 to AES-256</b>, and from <b>SHA-256 to SHA-512</b> completely restores cryptographic integrity. Even a perfectly stable, massive quantum computer cannot brute-force a 256-bit key space before the heat death of the universe.
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
 
 
 # ═══════════════════════════════════════════════════════════════════════════

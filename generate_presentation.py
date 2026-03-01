@@ -157,6 +157,14 @@ p.text = "Post-Quantum schemes relying on Lattice structures (LWE) and extended 
 p.level = 1
 
 p = tf5.add_paragraph()
+p.text = "NIST finalized PQC Standards (2024): FIPS 203 (Kyber), FIPS 204 (Dilithium), and FIPS 205 (SPHINCS+)."
+p.level = 2
+
+p = tf5.add_paragraph()
+p.text = "These mathematical frameworks replace prime factoring with chaotic, multi-dimensional grids that quantum computers cannot solve."
+p.level = 2
+
+p = tf5.add_paragraph()
 p.text = "Future Work:"
 p.level = 1
 
@@ -170,6 +178,6 @@ p.level = 2
 
 
 # Save the presentation
-output_path = "Post_Quantum_Analyzer_Presentation.pptx"
+output_path = "Post_Quantum_Analyzer_Presentation_v2.pptx"
 prs.save(output_path)
 print(f"Presentation successfully generated at: {output_path}")

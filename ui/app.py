@@ -339,22 +339,22 @@ with tab1:
     # Step-by-step flow
     steps = [
         ("🔐", "1. Classical Key Exchange",
-         "RSA and Diffie-Hellman generate key pairs using **prime factorization** and **discrete logarithms**. "
+         "RSA and Diffie-Hellman generate key pairs using <b>prime factorization</b> and <b>discrete logarithms</b>. "
          "These problems are computationally hard for classical computers — requiring sub-exponential to exponential time."),
         ("⚡", "2. Quantum Attacks Emerge",
-         "**Shor's Algorithm (1994)** factors integers in **polynomial time** O(n³) on a quantum computer. "
-         "**Grover's Algorithm (1996)** provides a **quadratic speedup** O(√N) for brute-force search. "
+         "<b>Shor's Algorithm (1994)</b> factors integers in <b>polynomial time</b> O(n³) on a quantum computer. "
+         "<b>Grover's Algorithm (1996)</b> provides a <b>quadratic speedup</b> O(√N) for brute-force search. "
          "Together, they shatter the mathematical hardness that protects classical cryptography."),
         ("💥", "3. Classical Crypto Breaks",
          "With a sufficiently powerful quantum computer, RSA-2048 could be broken in hours instead of billions of years. "
          "Symmetric keys like AES-128 lose half their effective security bits. The entire PKI infrastructure is at risk."),
         ("🛡️", "4. Post-Quantum Cryptography (PQC)",
-         "**Lattice-based** schemes (CRYSTALS-Kyber, Dilithium) rely on the **Learning With Errors** problem — "
-         "exponentially hard for both classical AND quantum computers. **Hash-based** signatures (SPHINCS+) "
+         "<b>Lattice-based</b> schemes (CRYSTALS-Kyber, Dilithium) rely on the <b>Learning With Errors</b> problem — "
+         "exponentially hard for both classical AND quantum computers. <b>Hash-based</b> signatures (SPHINCS+) "
          "rely on cryptographic hash functions, immune to Shor's algorithm."),
         ("✅", "5. NIST Standardization (2024)",
-         "NIST has officially standardized three PQC algorithms: **FIPS 203** (ML-KEM/Kyber), "
-         "**FIPS 204** (ML-DSA/Dilithium), and **FIPS 205** (SLH-DSA/SPHINCS+). "
+         "NIST has officially standardized three PQC algorithms: <b>FIPS 203</b> (ML-KEM/Kyber), "
+         "<b>FIPS 204</b> (ML-DSA/Dilithium), and <b>FIPS 205</b> (SLH-DSA/SPHINCS+). "
          "The global migration to quantum-safe cryptography has begun."),
     ]
 

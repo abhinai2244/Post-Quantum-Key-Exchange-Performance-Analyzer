@@ -471,18 +471,23 @@ with tab2:
                 import matplotlib
                 matplotlib.use('Agg')
                 import matplotlib.pyplot as plt
-                fig_circuit, ax = plt.subplots(figsize=(14, 4))
-                fig_circuit.patch.set_facecolor('#0a0a1a')
-                ax.set_facecolor('#0a0a1a')
-                qc.draw('mpl', ax=ax, style={
+                
+                # Qiskit's qc.draw('mpl') creates its own figure. 
+                # We should capture that figure instead of creating our own subplots which causes overlapping.
+                fig_circuit = qc.draw('mpl', style={
                     "backgroundcolor": "#0a0a1a",
                     "textcolor": "#e0e0e0",
                     "linecolor": "#00ffff",
                     "gatefacecolor": "#1b263b",
                     "gatetextcolor": "#e0e0e0",
                     "barrierfacecolor": "#8b5cf6",
+                    "fontsize": 10,
+                    "subfontsize": 8,
                 })
-                st.pyplot(fig_circuit)
+                fig_circuit.patch.set_facecolor('#0a0a1a')
+                # ensure it isn't cropped
+                fig_circuit.tight_layout()
+                st.pyplot(fig_circuit, bbox_inches='tight')
                 plt.close(fig_circuit)
             except Exception as e:
                 st.info(f"Circuit diagram rendering: using text fallback. ({e})")
@@ -569,18 +574,21 @@ with tab2:
                 import matplotlib
                 matplotlib.use('Agg')
                 import matplotlib.pyplot as plt
-                fig_circuit, ax = plt.subplots(figsize=(12, 4))
-                fig_circuit.patch.set_facecolor('#0a0a1a')
-                ax.set_facecolor('#0a0a1a')
-                qc.draw('mpl', ax=ax, style={
+                
+                # Qiskit's qc.draw('mpl') creates its own figure.
+                fig_circuit = qc.draw('mpl', style={
                     "backgroundcolor": "#0a0a1a",
                     "textcolor": "#e0e0e0",
                     "linecolor": "#00ffff",
                     "gatefacecolor": "#1b263b",
                     "gatetextcolor": "#e0e0e0",
                     "barrierfacecolor": "#8b5cf6",
+                    "fontsize": 10,
+                    "subfontsize": 8,
                 })
-                st.pyplot(fig_circuit)
+                fig_circuit.patch.set_facecolor('#0a0a1a')
+                fig_circuit.tight_layout()
+                st.pyplot(fig_circuit, bbox_inches='tight')
                 plt.close(fig_circuit)
             except Exception as e:
                 st.info(f"Circuit diagram rendering: using text fallback. ({e})")

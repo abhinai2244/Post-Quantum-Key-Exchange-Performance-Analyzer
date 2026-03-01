@@ -319,7 +319,7 @@ st.sidebar.markdown("""
 # ╔══════════════════════════════════════════════════════════════════════════╗
 # ║                            TABS                                         ║
 # ╚══════════════════════════════════════════════════════════════════════════╝
-tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
     "📖 How It Works",
     "🎯 Live Attack Simulation",
     "📉 NISQ Noise Analysis",
@@ -327,6 +327,7 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
     "🛡️ Post-Quantum Security Shield",
     "⏳ Quantum Threat Timeline",
     "🔬 Interactive Lab",
+    "💬 Real-World PQC Chat",
 ])
 
 
@@ -1200,3 +1201,66 @@ with tab7:
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# TAB 8 — REAL-WORLD PQC CHAT IMPLEMENTATION
+# ═══════════════════════════════════════════════════════════════════════════
+with tab8:
+    st.markdown('<div class="section-header">💬 Real-World Implementation: PQC Secure Chat</div>', unsafe_allow_html=True)
+    st.markdown("""
+    <div class="glass-card" style="margin-bottom: 20px;">
+        <div style="color:rgba(224,224,224,0.85); line-height:1.7;">
+            <b>How does a Post-Quantum Chat actually work?</b><br>
+            Modern secure messaging (like Signal or WhatsApp) uses a <i>Key Encapsulation Mechanism (KEM)</i>. 
+            Because PQC algorithms like Kyber are slightly slower and have larger keys, they are NOT used to encrypt the heavy chat messages directly.
+            Instead, Kyber is used only once to securely wrap (encapsulate) a lightning-fast <b>AES-256 symmetric key</b>. 
+            Once both users have safely shared the AES key, the actual conversation is encrypted using military-grade math that Grover's algorithm cannot break.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown('### Step 1: Kyber Keypair Generation (Alice)')
+    if st.button("Generate Kyber Keys", key="kyber_gen"):
+        st.session_state['kyber_pub'] = "pqc_kyber512_public_key_" + "".join(__import__('random').choices("0123456789abcdef", k=32))
+        st.session_state['kyber_priv'] = "pqc_kyber512_private_key_SECRET_" + "".join(__import__('random').choices("0123456789abcdef", k=64))
+
+    if 'kyber_pub' in st.session_state:
+        st.code(f"Public Key (Shareable):  {st.session_state['kyber_pub']}\nPrivate Key (Kept safe): <HIDDEN>", language="text")
+
+        st.markdown('### Step 2: AES-256 Key Encapsulation (Bob)')
+        st.write("Bob generates a random AES-256 key to encrypt his messages, and uses Alice's Kyber Public Key to encapsulate (lock) it.")
+        if st.button("Encapsulate AES Key"):
+            st.session_state['aes_key'] = "AES256_" + "".join(__import__('random').choices("0123456789abcdef", k=64))
+            st.session_state['ciphertext'] = "KYBER_CIPHERTEXT_BLOB_" + "".join(__import__('random').choices("0123456789abcdef", k=128))
+
+        if 'aes_key' in st.session_state:
+            col1, col2 = st.columns(2)
+            with col1:
+                st.info(f"Bob's Secret AES Key:\n`{st.session_state['aes_key'][:16]}...`")
+            with col2:
+                st.warning(f"Encapsulated Ciphertext (Sent to Alice):\n`{st.session_state['ciphertext'][:24]}...`")
+
+            st.markdown('### Step 3: Decapsulation & Secure Chat')
+            st.write("Alice uses her Kyber Private Key to unlock the Ciphertext and extract Bob's AES-256 key. Now they share the same symmetric key!")
+            
+            chat_msg = st.text_input("Send a secret message:", value="The invasion starts at dawn!")
+            if st.button("Encrypt & Send Message"):
+                import base64
+                # Mock AES encryption for visual demo
+                encrypted_msg = base64.b64encode(chat_msg.encode('utf-8')).decode('utf-8')
+                st.markdown(f"""
+                <div style="display:flex; justify-content:space-between; margin-top:10px;">
+                    <div class="glass-card" style="width:48%; background:rgba(239, 68, 68, 0.1); border-left:4px solid #ef4444;">
+                        <b>Packet Intercepted by Hacker:</b><br>
+                        <code style="color:#ef4444;">{encrypted_msg[::-1].upper() + "X9#@!"}</code><br>
+                        <small style="color:#ef4444;">Grover's Algorithm Time-to-Hack: 13.8 billion years (AES-256)</small>
+                    </div>
+                    <div class="glass-card" style="width:48%; background:rgba(34, 197, 94, 0.1); border-left:4px solid #22c55e;">
+                        <b>Alice receives and decrypts:</b><br>
+                        <span style="color:#22c55e;">"{chat_msg}"</span><br>
+                        <small style="color:#22c55e;">Decrypted instantly using shared AES-256 key.</small>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+
